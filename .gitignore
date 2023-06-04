@@ -17,3 +17,6 @@ Cargo.lock
 # Added by cargo
 
 /target
+
+# rss feed sqlite db
+rss_cache.db
