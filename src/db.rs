@@ -1,4 +1,4 @@
-use crate::model::MyItem;
+use crate::model::ArticleInfo;
 use rusqlite::{params, Connection, Result};
 
 pub struct Database {
@@ -11,6 +11,7 @@ impl Database {
         conn.execute(
             "CREATE TABLE IF NOT EXISTS items (
                  title TEXT NOT NULL,
+                 description TEXT,
                  link TEXT NOT NULL UNIQUE
              )",
             [],
@@ -18,10 +19,10 @@ impl Database {
         Ok(Self { conn })
     }
 
-    pub fn insert_item(&mut self, item: &MyItem) -> Result<usize> {
+    pub fn insert_item(&mut self, item: &ArticleInfo) -> Result<usize> {
         self.conn.execute(
-            "INSERT INTO items (title, link) VALUES (?, ?)",
-            params![&item.title, &item.link],
+            "INSERT INTO items (title, description, link) VALUES (?, ?, ?)",
+            params![&item.title, &item.description, &item.link],
         )
     }
 }
