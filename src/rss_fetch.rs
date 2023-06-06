@@ -21,6 +21,14 @@ pub async fn process_rss_feeds(config: &AppConfig) -> Result<(), Box<dyn std::er
     for line in buffered.lines() {
         let url = line?;
 
+        // In the future, add websub support here
+        // take in two params, IP address (no default) and port (default 80)
+        // for each websub enabled feed, call a module that will handle subscribing to the feed
+        // need to also abstract the data processing steps so that they can be called from here
+        // or the websub module
+        // Also need to store websub subscriptions or at least ensure that startup
+        // behavior is fine if a sub is already leased
+
         loop {
             let content = client.get(&url).send().await?.text().await?;
             let channel = content.parse::<Channel>()?;
@@ -62,10 +70,9 @@ pub async fn process_rss_feeds(config: &AppConfig) -> Result<(), Box<dyn std::er
                     println!("Article already seen: {}", title);
                 }
             }
-
+            // parameterize this
             time::sleep(Duration::from_secs(10)).await;
         }
     }
-
     Ok(())
 }
