@@ -1,56 +1,30 @@
-use rss::Channel;
+mod db;
+mod model;
+mod server;
+
+use db::Database;
+use model::MyItem;
+use server::start_server_if_test;
+
 use reqwest::Client;
-use rusqlite::{params, Connection, Result};
-use std::time::Duration;
-use tokio::time;
-use warp::Filter;
-use serde_derive::{Serialize, Deserialize};
-use std::env;
+use rss::Channel;
 use std::fs::File;
 use std::io::{self, BufRead};
-
-#[derive(Serialize, Debug, Deserialize)] 
-struct MyItem {
-    title: String,
-    link: String,
-}
+use std::time::Duration;
+use tokio::time;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let conn = Connection::open("rss_cache.db")?;
-
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS items (
-             title TEXT NOT NULL,
-             link TEXT NOT NULL UNIQUE
-         )",
-        [],
-    )?;
-
+    let mut db = Database::new("rss_cache.db")?;
     let client = Client::new();
 
-    // Launch dummy server if "test" flag is set
-    let args: Vec<String> = env::args().collect();
-    if args.len() > 1 && args[1] == "test" {
-        let route = warp::path("endpoint")
-            .and(warp::post())
-            .and(warp::body::json())
-            .map(|item: MyItem| {
-                println!("{:#?}", item);
-                warp::reply()
-            });
-        println!("Launching test server at http://localhost:3030/endpoint");
-        tokio::spawn(warp::serve(route).run(([127, 0, 0, 1], 3030)));
-    }
+    start_server_if_test();
 
-    // Open the text file
     let input_file = File::open("rss_feeds.txt")?;
     let buffered = io::BufReader::new(input_file);
 
-    // Add a delay here
     time::sleep(Duration::from_secs(3)).await;
 
-    // Read the file line by line
     for line in buffered.lines() {
         let url = line?;
 
@@ -67,18 +41,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     link: link.clone(),
                 };
 
-                match conn.execute(
-                    "INSERT INTO items (title, link) VALUES (?, ?)",
-                    params![title, link],
-                ) {
-                    Ok(_) => {
-                        client.post("http://localhost:3030/endpoint")
-                            .json(&my_item)
-                            .send()
-                            .await?;
-                    }
-                    Err(rusqlite::Error::SqliteFailure(error, _)) if error.code == rusqlite::ErrorCode::ConstraintViolation => {}
-                    Err(err) => return Err(err.into()),
+                if db.insert_item(&my_item).is_ok() {
+                    client
+                        .post("http://localhost:3030/endpoint")
+                        .json(&my_item)
+                        .send()
+                        .await?;
                 }
             }
 
