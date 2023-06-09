@@ -1,1 +1,2 @@
+https://www.theblock.co/rss.xml
 https://www.coindesk.com/arc/outboundfeeds/rss/

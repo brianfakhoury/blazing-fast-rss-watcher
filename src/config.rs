@@ -1,23 +1,54 @@
 use dotenv::dotenv;
 use std::env;
 use std::error::Error;
+use structopt::StructOpt;
+
+#[derive(Debug, StructOpt)]
+#[structopt(name = "RSS Config", about = "Parameters to run the watcher.")]
+struct Opt {
+    #[structopt(subcommand)]
+    mode: Mode,
+    #[structopt(short = "a", long = "address", default_value = "")]
+    ip_addr: String,
+    #[structopt(short = "p", long = "poll", default_value = "10000")]
+    poll_interval: usize,
+    #[structopt(short = "o", long = "one")]
+    one_at_a_time: bool,
+}
+
+#[derive(Debug, StructOpt)]
+pub enum Mode {
+    #[structopt(about = "Run in test mode.")]
+    Test,
+    #[structopt(about = "Run in telegram mode.")]
+    Telegram,
+    #[structopt(about = "Run in http mode.")]
+    Http,
+}
 
 pub struct AppConfig {
-    pub mode: String,
+    pub mode: Mode,
     pub chat_id: Option<String>,
     pub bot_token: Option<String>,
+    pub ip_address: Option<String>,
+    pub poll_interval: usize,
+    pub one_at_a_time: bool,
 }
 
 impl AppConfig {
     pub fn from_env_args() -> Result<AppConfig, Box<dyn Error>> {
-        let mode = env::args().nth(1).unwrap_or_default();
+        let opt = Opt::from_args();
 
+        let mode = opt.mode;
+        let ip_address = Some(opt.ip_addr).filter(|s| !s.is_empty());
+        let poll_interval = opt.poll_interval;
+        let one_at_a_time = opt.one_at_a_time;
         let mut chat_id = None;
         let mut bot_token = None;
 
-        match mode.as_str() {
-            "test" | "http" => {}
-            "telegram" => {
+        match mode {
+            Mode::Test | Mode::Http => {}
+            Mode::Telegram => {
                 dotenv().ok();
                 chat_id = Some(
                     env::var("CHAT_ID").expect("CHAT_ID not found. Please set it in the .env file"),
@@ -27,19 +58,15 @@ impl AppConfig {
                         .expect("BOT_TOKEN not found. Please set it in the .env file"),
                 );
             }
-            _ => {
-                eprintln!(
-                    "Invalid mode: {}. Please choose one of: test, telegram, http",
-                    mode
-                );
-                std::process::exit(1);
-            }
         }
 
         Ok(AppConfig {
             mode,
             chat_id,
             bot_token,
+            ip_address,
+            poll_interval,
+            one_at_a_time,
         })
     }
 }

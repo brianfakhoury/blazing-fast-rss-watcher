@@ -1,8 +1,9 @@
 use crate::model::ArticleInfo;
 use rusqlite::{params, Connection, Result};
+use std::sync::Mutex;
 
 pub struct Database {
-    conn: Connection,
+    conn: Mutex<Connection>,
 }
 
 impl Database {
@@ -11,18 +12,18 @@ impl Database {
         conn.execute(
             "CREATE TABLE IF NOT EXISTS items (
                  title TEXT NOT NULL,
-                 description TEXT,
                  link TEXT NOT NULL UNIQUE
              )",
             [],
         )?;
-        Ok(Self { conn })
+        Ok(Self { conn: Mutex::new(conn) })
     }
 
     pub fn insert_item(&mut self, item: &ArticleInfo) -> Result<usize> {
-        self.conn.execute(
-            "INSERT INTO items (title, description, link) VALUES (?, ?, ?)",
-            params![&item.title, &item.description, &item.link],
+        let conn = self.conn.lock().unwrap();
+        conn.execute(
+            "INSERT INTO items (title, link) VALUES (?, ?)",
+            params![&item.title, &item.link],
         )
     }
 }
