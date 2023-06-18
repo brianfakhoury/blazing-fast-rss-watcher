@@ -1,6 +1,6 @@
-use serde_derive::{Deserialize, Serialize};
+use serde_derive::Serialize;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize)]
 pub struct ArticleInfo {
     pub title: String,
     pub description: Option<String>,

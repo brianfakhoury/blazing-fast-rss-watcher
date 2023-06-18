@@ -16,7 +16,9 @@ impl Database {
              )",
             [],
         )?;
-        Ok(Self { conn: Mutex::new(conn) })
+        Ok(Self {
+            conn: Mutex::new(conn),
+        })
     }
 
     pub fn insert_item(&mut self, item: &ArticleInfo) -> Result<usize> {

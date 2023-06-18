@@ -1,5 +1,7 @@
 # Blazing Fast RSS Watcher
 
+This codebase is not yet ready for production usage.
+
 ## How to run it
 
 1. `$ git clone` this repository on the main branch

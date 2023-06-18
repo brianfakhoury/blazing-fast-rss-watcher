@@ -1,3 +1,9 @@
+pub mod config;
+mod db;
+mod http;
+mod model;
+mod telegram;
+
 use crate::config::{AppConfig, Mode};
 use crate::db::Database;
 use crate::http::post_article;
@@ -28,7 +34,10 @@ pub async fn process_rss_feeds(config: &AppConfig) -> Result<(), Box<dyn std::er
     loop {
         for url in &lines {
             let content = match reqwest::get(url).await {
-                Ok(resp) => resp.bytes().await.unwrap(),
+                Ok(resp) => {
+                    println!("Fetched {}", url);
+                    resp.bytes().await.unwrap()
+                }
                 Err(e) => {
                     eprintln!("Error fetching {}: {}", url, e);
                     continue;
@@ -41,7 +50,6 @@ pub async fn process_rss_feeds(config: &AppConfig) -> Result<(), Box<dyn std::er
                     continue;
                 }
             };
-            println!("Fetched {}", url);
 
             for item in channel.items() {
                 let title = item.title().unwrap_or_default().to_owned();
