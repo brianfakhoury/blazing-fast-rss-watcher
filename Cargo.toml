@@ -1,14 +1,12 @@
 [package]
 name = "blazing-fast-rss-watcher"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Brian Fakhoury <brianfakhoury@gmail.com>"]
 edition = "2021"
 license = "MIT"
 description = "A simple, asynchronous RSS reader implemented in Rust. It fetches, parses, and stores articles from provided RSS feeds and can operate in various modes including testing, HTTP, and Telegram notifications."
 repository = "https://github.com/brianfakhoury/blazing-fast-rss-watcher"
 keywords = ["rss", "polling"]
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 reqwest = { version = "0.11", features = ["json"] }

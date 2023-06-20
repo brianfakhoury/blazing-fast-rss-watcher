@@ -72,8 +72,8 @@ pub async fn process_rss_feeds(config: &AppConfig) -> Result<(), Box<dyn std::er
                         }
                         Mode::Telegram => {
                             send_message(
-                                &config.bot_token.as_ref().unwrap(),
-                                &config.chat_id.as_ref().unwrap(),
+                                config.bot_token.as_ref().unwrap(),
+                                config.chat_id.as_ref().unwrap(),
                                 &article,
                             )
                             .await?;

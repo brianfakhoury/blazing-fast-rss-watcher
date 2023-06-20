@@ -19,7 +19,7 @@ pub async fn send_message(
     );
     let parse_mode = String::from("HTML");
     let disable_web_page_preview = String::from("true");
-    let domain = Regex::new(r"^https?:\/\/(?:www\.)?([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})(?:\/|$)")?
+    let domain = Regex::new(r#"^https?://(?:www\.)?([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})(?:/|$)"#)?
         .captures(&article.link)
         .and_then(|cap| cap.get(1))
         .map(|m| m.as_str())

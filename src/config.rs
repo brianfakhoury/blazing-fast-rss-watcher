@@ -4,15 +4,21 @@ use std::error::Error;
 use structopt::StructOpt;
 
 #[derive(Debug, StructOpt)]
-#[structopt(name = "RSS Config", about = "Parameters to run the watcher.")]
+#[structopt(
+    name = "Blazing Fast RSS Watcher",
+    about = "A blazing fast RSS watcher."
+)]
 struct Opt {
     #[structopt(subcommand)]
     mode: Mode,
+    /// Specify the IP address to listen on for websub
     #[structopt(short = "a", long = "address", default_value = "")]
     ip_addr: String,
+    /// Specify the poll interval in milliseconds
     #[structopt(short = "p", long = "poll", default_value = "10000")]
     poll_interval: usize,
-    #[structopt(short = "o", long = "one")]
+    /// xit program immediately after one article per source, good for testing
+    #[structopt(short = "o", long = "one", global = true)]
     one_at_a_time: bool,
 }
 
