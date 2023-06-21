@@ -1,13 +1,13 @@
 use serde_derive::Serialize;
 
 #[derive(Serialize)]
-pub struct ArticleInfo {
+pub struct Article {
     pub title: String,
     pub description: Option<String>,
     pub link: String,
 }
 
-impl std::fmt::Debug for ArticleInfo {
+impl std::fmt::Debug for Article {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,

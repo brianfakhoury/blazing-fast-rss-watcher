@@ -1,6 +1,6 @@
 [package]
 name = "blazing-fast-rss-watcher"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Brian Fakhoury <brianfakhoury@gmail.com>"]
 edition = "2021"
 license = "MIT"
@@ -19,3 +19,4 @@ warp = "0.3.5"
 dotenv = "0.15.0"
 structopt = "0.3.26"
 regex = "1.8.4"
+futures = "0.3.28"

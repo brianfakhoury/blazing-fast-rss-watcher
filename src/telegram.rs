@@ -1,12 +1,13 @@
-use crate::model::ArticleInfo;
+use crate::model::Article;
 use regex::Regex;
 use reqwest::Client;
 use std::error::Error;
 
 pub async fn send_message(
+    client: &Client,
     bot_token: &str,
     chat_id: &str,
-    article: &ArticleInfo,
+    article: &Article,
 ) -> Result<(), Box<dyn Error>> {
     let message = format!(
         "<b>{}</b>{}",
@@ -28,7 +29,6 @@ pub async fn send_message(
         "{{\"inline_keyboard\":[[{{\"text\":\"Open Article on {}\",\"url\":\"{}\"}}]]}}",
         domain, article.link
     );
-    let client = Client::new();
     client
         .post(format!(
             "https://api.telegram.org/bot{}/sendMessage",

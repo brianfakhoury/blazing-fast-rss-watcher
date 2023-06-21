@@ -15,8 +15,8 @@ struct Opt {
     #[structopt(short = "a", long = "address", default_value = "")]
     ip_addr: String,
     /// Specify the poll interval in milliseconds
-    #[structopt(short = "p", long = "poll", default_value = "10000")]
-    poll_interval: usize,
+    #[structopt(short = "p", long = "poll", default_value = "20000", global = true)]
+    poll_interval: u64,
     /// xit program immediately after one article per source, good for testing
     #[structopt(short = "o", long = "one", global = true)]
     one_at_a_time: bool,
@@ -37,7 +37,7 @@ pub struct AppConfig {
     pub chat_id: Option<String>,
     pub bot_token: Option<String>,
     pub ip_address: Option<String>,
-    pub poll_interval: usize,
+    pub poll_interval: u64,
     pub one_at_a_time: bool,
 }
 

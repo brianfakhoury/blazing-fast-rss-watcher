@@ -1,4 +1,4 @@
-use crate::model::ArticleInfo;
+use crate::model::Article;
 use rusqlite::{params, Connection, Result};
 use std::sync::Mutex;
 
@@ -21,7 +21,7 @@ impl Database {
         })
     }
 
-    pub fn insert_item(&mut self, item: &ArticleInfo) -> Result<usize> {
+    pub fn insert_item(&self, item: &Article) -> Result<usize> {
         let conn = self.conn.lock().unwrap();
         conn.execute(
             "INSERT INTO items (title, link) VALUES (?, ?)",
