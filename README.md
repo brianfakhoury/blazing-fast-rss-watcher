@@ -1,8 +1,10 @@
 # Blazing Fast RSS Watcher
 
-This codebase is not yet ready for production usage.
+⚠️ This codebase is not yet ready for production usage.
 
-## How to run it
+This can be used as a library, or as a standalone binary.
+
+## How to run it as a binary
 
 1. `$ git clone` this repository on the main branch
 2. `$ cargo build --release`

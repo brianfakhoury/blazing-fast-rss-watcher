@@ -1,7 +1,17 @@
 use crate::model::Article;
 use regex::Regex;
 use reqwest::Client;
+use scraper::{Html, Selector};
 use std::error::Error;
+
+fn clean_html_to_plain_text(html: &str) -> String {
+    let fragment = Html::parse_fragment(html);
+    let selector = Selector::parse("p").unwrap();
+    match fragment.select(&selector).next() {
+        Some(p) => p.text().collect::<Vec<_>>().join(""),
+        None => html.into(),
+    }
+}
 
 pub async fn send_message(
     client: &Client,
@@ -9,15 +19,8 @@ pub async fn send_message(
     chat_id: &str,
     article: &Article,
 ) -> Result<(), Box<dyn Error>> {
-    let message = format!(
-        "<b>{}</b>{}",
-        article.title,
-        article
-            .description
-            .as_ref()
-            .map(|s| format!("\n\n{}", s))
-            .unwrap_or(String::from(""))
-    );
+    let desc = clean_html_to_plain_text(article.description.as_ref().unwrap_or(&String::from("")));
+    let message = format!("<b>{}</b>\n\n{}", article.title, desc);
     let parse_mode = String::from("HTML");
     let disable_web_page_preview = String::from("true");
     let domain = Regex::new(r#"^https?://(?:www\.)?([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})(?:/|$)"#)?

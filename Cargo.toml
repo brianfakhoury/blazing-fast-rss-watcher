@@ -20,3 +20,5 @@ dotenv = "0.15.0"
 structopt = "0.3.26"
 regex = "1.8.4"
 futures = "0.3.28"
+scraper = "0.16.0"
+
