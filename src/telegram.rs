@@ -49,3 +49,43 @@ pub async fn send_message(
 
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_clean_html_to_plain_text() {
+        let html_with_p = "<p>This is a test</p>";
+        let result = clean_html_to_plain_text(html_with_p);
+        assert_eq!(
+            result, "This is a test",
+            "Paragraph text should be extracted"
+        );
+
+        let html_without_p = "<div>This is a test</div>";
+        let result = clean_html_to_plain_text(html_without_p);
+        assert_eq!(
+            result, html_without_p,
+            "HTML without paragraph should be returned as it is"
+        );
+
+        let html_empty = "";
+        let result = clean_html_to_plain_text(html_empty);
+        assert_eq!(result, "", "Empty HTML should return an empty string");
+
+        let html_with_multiple_p = "<p>First Paragraph.</p><p>Second Paragraph.</p>";
+        let result = clean_html_to_plain_text(html_with_multiple_p);
+        assert_eq!(
+            result, "First Paragraph.",
+            "First paragraph text should be extracted"
+        );
+
+        let no_html = "This is a test";
+        let result = clean_html_to_plain_text(no_html);
+        assert_eq!(
+            result, "This is a test",
+            "String should be returned as is if it does not contain HTML"
+        );
+    }
+}

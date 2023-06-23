@@ -1,15 +1,34 @@
 # Blazing Fast RSS Watcher
 
+[![Rust](https://github.com/brianfakhoury/blazing-fast-rss-watcher/actions/workflows/rust.yml/badge.svg)](https://github.com/brianfakhoury/blazing-fast-rss-watcher/actions/workflows/rust.yml)
+[![Crates.io](https://img.shields.io/crates/v/blazing-fast-rss-watcher.svg)](https://crates.io/crates/blazing-fast-rss-watcher)
+
 ⚠️ This codebase is not yet ready for production usage.
 
 This can be used as a library, or as a standalone binary.
 
 ## How to run it as a binary
 
+### From Cargo
+
+```
+$ cargo install blazing-fast-rss-watcher
+```
+
+### From source
+
 1. `$ git clone` this repository on the main branch
 2. `$ cargo build --release`
-3. Place your rss links in the `rss_feeds.txt` file, one per line
-4. `$ target/release/blazing-fast-rss-watcher test`
+
+### Usage
+
+First, place your rss links in the `rss_feeds.txt` file, one per line.
+
+Then run:
+
+```
+blazing-fast-rss-watcher <mode>
+```
 
 Available modes: `test`, `http`, `telegram`
 
