@@ -21,3 +21,6 @@ rss_cache.db
 
 # env files
 .env
+
+# ds store
+.DS_Store
